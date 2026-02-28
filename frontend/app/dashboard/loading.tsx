@@ -14,7 +14,7 @@ export default function Loading() {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-12">
         <div className="space-y-6 lg:col-span-5">
-          <Card className="glass-card">
+          <Card className="shadow-cal-sm bg-card">
             <CardHeader className="pb-4">
               <CardTitle>Prescription summary</CardTitle>
             </CardHeader>
@@ -24,7 +24,7 @@ export default function Loading() {
               <Skeleton className="h-10 w-full" />
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="shadow-cal-sm bg-card">
             <CardHeader className="pb-4">
               <CardTitle>Reminders</CardTitle>
             </CardHeader>
@@ -36,7 +36,7 @@ export default function Loading() {
         </div>
 
         <div className="space-y-6 lg:col-span-7">
-          <Card className="glass-card">
+          <Card className="shadow-cal-sm bg-card">
             <CardHeader className="pb-4">
               <CardTitle>Medicine comparison table</CardTitle>
             </CardHeader>

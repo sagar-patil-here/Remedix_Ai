@@ -11,7 +11,7 @@ export interface MedicineCardProps {
 
 export function MedicineCard({ medicine, className }: MedicineCardProps) {
   return (
-    <Card className={cn("glass-card", className)}>
+    <Card className={cn("bg-card shadow-cal-sm", className)}>
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">

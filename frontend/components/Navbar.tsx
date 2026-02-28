@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Activity, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ThemeToggle } from "./ThemeToggle";
 
 export interface NavbarProps {
   className?: string;
@@ -25,19 +27,30 @@ export function Navbar({ className }: NavbarProps) {
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          <Button asChild variant="secondary" className="hidden sm:inline-flex">
-            <Link href="/upload">Upload Prescription</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/upload" className="gap-2 inline-flex items-center">
-              Analyze
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <SignedIn>
+            <Button asChild variant="secondary" className="hidden sm:inline-flex">
+              <Link href="/upload">Upload Prescription</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/upload" className="gap-2 inline-flex items-center">
+                Analyze
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <UserButton afterSignOutUrl="/" />
+          </SignedIn>
+          <SignedOut>
+            <Button asChild>
+              <Link href="/upload" className="gap-2 inline-flex items-center">
+                Analyze
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </SignedOut>
         </div>
       </div>
     </header>
   );
 }
-

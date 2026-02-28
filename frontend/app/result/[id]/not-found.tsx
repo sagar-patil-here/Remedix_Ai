@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export default function NotFound() {
   return (
     <div className="container-padded pt-16">
-      <Card className="glass-card mx-auto max-w-xl">
+      <Card className="shadow-cal-sm bg-card mx-auto max-w-xl">
         <CardHeader className="pb-4">
           <CardTitle>Result not found</CardTitle>
         </CardHeader>

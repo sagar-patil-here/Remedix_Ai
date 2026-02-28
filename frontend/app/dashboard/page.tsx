@@ -29,7 +29,7 @@ export default function DashboardPage() {
 
       <FadeIn delay={0.1}>
         {prescriptions.length === 0 ? (
-          <Card className="glass-card border-dashed p-12 text-center">
+          <Card className="border-dashed p-12 text-center shadow-none">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-muted">
               <FileText className="h-6 w-6 text-muted-foreground" />
             </div>
@@ -44,7 +44,7 @@ export default function DashboardPage() {
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {prescriptions.map((p) => (
-              <Card key={p.id} className="glass-card hover:border-primary/30 transition-colors flex flex-col">
+              <Card key={p.id} className="hover:border-primary/30 transition-all hover:shadow-cal-md flex flex-col">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>

@@ -1,4 +1,4 @@
-import type { PrescriptionResult, PriceLink, Reminder, Medicine, GenericAlternative } from "@/lib/types";
+import type { PrescriptionResult, PriceLink, Reminder, Medicine, GenericAlternative, CalendarEvent } from "@/lib/types";
 
 // Mock data store for client-side persistence simulation
 declare global {
@@ -112,7 +112,61 @@ function mockMedicines(): Medicine[] {
   ];
 }
 
-// Main function to generate a mock result
+function mockCalendarEvents(): CalendarEvent[] {
+  const today = new Date();
+  const startDate = today.toISOString().split("T")[0];
+
+  const reExamDate = new Date(today);
+  reExamDate.setDate(reExamDate.getDate() + 10);
+  const reExamDateStr = reExamDate.toISOString().split("T")[0];
+
+  return [
+    {
+      id: "cal1",
+      title: "Morning Dose - Amoxicillin 500mg",
+      description: "Take Amoxicillin 500mg after breakfast. Complete full 5-day course.",
+      startDate,
+      startTime: "09:00",
+      endTime: "09:15",
+      recurrence: "DAILY",
+      recurrenceCount: 5,
+      type: "medicine",
+    },
+    {
+      id: "cal2",
+      title: "Evening Dose - Amoxicillin 500mg",
+      description: "Take Amoxicillin 500mg after dinner.",
+      startDate,
+      startTime: "21:00",
+      endTime: "21:15",
+      recurrence: "DAILY",
+      recurrenceCount: 5,
+      type: "medicine",
+    },
+    {
+      id: "cal3",
+      title: "Before Breakfast - Pantoprazole 40mg",
+      description: "Take Pantoprazole 40mg on empty stomach, 30 mins before breakfast.",
+      startDate,
+      startTime: "08:30",
+      endTime: "08:45",
+      recurrence: "DAILY",
+      recurrenceCount: 7,
+      type: "medicine",
+    },
+    {
+      id: "cal4",
+      title: "Follow-up / Re-examination",
+      description: "Scheduled re-examination with doctor. Bring previous prescription and this analysis report.",
+      startDate: reExamDateStr,
+      startTime: "10:00",
+      endTime: "10:30",
+      recurrence: "NONE",
+      type: "reexamination",
+    },
+  ];
+}
+
 export function createMockAnalysis(input: { fileName: string }): PrescriptionResult {
   const id = `rx_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
   const fileName = input.fileName || "prescription.jpg";
@@ -122,7 +176,8 @@ export function createMockAnalysis(input: { fileName: string }): PrescriptionRes
     createdAt: new Date().toISOString(),
     sourceFileName: fileName,
     sourceKind: fileName.toLowerCase().endsWith(".pdf") ? "pdf" : "image",
-    sourcePreviewUrl: "/prescription-placeholder.svg", // Ensure this asset exists or use a placeholder
+    sourcePreviewUrl: "/prescription-placeholder.svg",
+    status: "extracted",
     doctorNote: "Drink plenty of water. Avoid spicy food. Complete the full course of antibiotics.",
     language: "en",
     patientSummary:
@@ -130,6 +185,12 @@ export function createMockAnalysis(input: { fileName: string }): PrescriptionRes
     medicines: mockMedicines(),
     priceLinks: mockPriceLinks(),
     reminders: mockReminders(),
+    calendarEvents: mockCalendarEvents(),
+    reExaminationDate: (() => {
+      const d = new Date();
+      d.setDate(d.getDate() + 10);
+      return d.toISOString();
+    })(),
     
     // New features mock data
     audioUrl: "/mock-audio.mp3", // Placeholder

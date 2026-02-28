@@ -95,7 +95,7 @@ export function UploadCard({ className, onAnalyzed }: UploadCardProps) {
   };
 
   return (
-    <Card className={cn("glass-card", className)}>
+    <Card className={cn("shadow-cal-sm border-border bg-card", className)}>
       <CardHeader>
         <CardTitle>Upload prescription</CardTitle>
         <CardDescription>

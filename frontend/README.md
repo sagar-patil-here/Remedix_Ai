@@ -20,6 +20,21 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Troubleshooting
+
+### 500 errors on `_next/static/chunks/...` or `app/(landing)/page.js`
+
+**Root cause:** Usually `EMFILE: too many open files` — the dev server hits the system file descriptor limit when watching files.
+
+**Fixes:**
+1. **Use the safe dev script:** `npm run dev:safe` (increases ulimit before starting)
+2. **Or manually:** Run `ulimit -n 10240` in your terminal, then `npm run dev`
+3. **Clean rebuild:** `npm run clean && npm run build && npm run dev`
+
+### Production build works but dev fails
+
+Run `npm run build && npm run start` to serve the production build locally. If that works, the issue is dev-specific (often EMFILE).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

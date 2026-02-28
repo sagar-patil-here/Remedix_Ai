@@ -10,7 +10,7 @@ export interface PriceComparisonProps {
 
 export function PriceComparison({ links }: PriceComparisonProps) {
   return (
-    <Card className="glass-card">
+    <Card className="bg-card shadow-cal-sm">
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <span className="flex h-8 w-8 items-center justify-center rounded-xl border border-border bg-muted/30">

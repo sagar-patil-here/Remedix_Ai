@@ -57,6 +57,8 @@ Upload a prescription image or PDF and instantly get:
 | HuggingFace (local model) | Fallback AI model |
 | n8n | Telegram bot automation |
 
+->Still working on backend module and techstack could change according to need 
+
 ---
 
 ## Project Structure

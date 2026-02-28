@@ -22,7 +22,7 @@ export default function Loading() {
               <Skeleton className="aspect-[3/4] w-full" />
             </CardContent>
           </Card>
-          <Card className="glass-card">
+          <Card className="shadow-cal-sm bg-card">
             <CardHeader className="pb-4">
               <CardTitle>Actions</CardTitle>
             </CardHeader>
@@ -36,7 +36,7 @@ export default function Loading() {
         </div>
 
         <div className="space-y-6 lg:col-span-8">
-          <Card className="glass-card">
+          <Card className="shadow-cal-sm bg-card">
             <CardHeader className="pb-4">
               <CardTitle>Structured interpretation</CardTitle>
             </CardHeader>

@@ -21,7 +21,7 @@ export function ExportSection({
   const [lang, setLang] = React.useState<PrescriptionLanguage>("en");
 
   return (
-    <Card className="glass-card">
+    <Card className="bg-card shadow-cal-sm">
       <CardHeader className="pb-4">
         <CardTitle>Actions</CardTitle>
       </CardHeader>
