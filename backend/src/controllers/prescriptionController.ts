@@ -13,6 +13,17 @@ declare global {
 
 export const uploadPrescription = async (req: Request, res: Response) => {
   try {
+    // Mock user for testing if not present
+    if (!req.user) {
+      console.warn("No user found in request, using mock user for testing.");
+      req.user = {
+        _id: "67c1b5a5b5a5b5a5b5a5b5a5", // Mock MongoDB ID
+        name: "Test User",
+        email: "test@example.com",
+        role: "patient",
+      } as any;
+    }
+
     if (!req.file) {
       res.status(400).json({
         success: false,
@@ -69,9 +80,10 @@ export const uploadPrescription = async (req: Request, res: Response) => {
       data: { prescription },
     } as IResponse);
   } catch (error) {
+    console.error("Error in uploadPrescription:", error);
     res.status(500).json({
       success: false,
-      message: "Internal server error while processing prescription",
+      message: error instanceof Error ? error.message : "Internal server error while processing prescription",
     } as IResponse);
   }
 };

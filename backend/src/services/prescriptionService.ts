@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import fs from 'fs';
 import sharp from 'sharp';
 import Prescription, { IPrescriptionDocument } from '../models/prescriptionModel';
-import claudeService from './claudeService';
+import geminiService from './geminiService';
 import { SupportedLanguage } from '../types';
 
 
@@ -31,11 +31,11 @@ export class PrescriptionService {
     try {
       // Step 1: Extract from image using Claude Vision
       console.log(`Extracting prescription ${prescription._id}`);
-      const extraction = await claudeService.extractPrescription(filePath);
+      const extraction = await geminiService.extractPrescription(filePath);
 
       // Step 2: Generate patient-friendly version
       console.log(`Generating patient-friendly output for ${prescription._id}`);
-      const patientFriendly = await claudeService.generatePatientFriendly(extraction, language);
+      const patientFriendly = await geminiService.generatePatientFriendly(extraction, language);
 
       const processingDurationMs = Date.now() - startTime;
 
@@ -146,7 +146,7 @@ export class PrescriptionService {
     const prescription = await Prescription.findOne({ _id: prescriptionId, userId });
     if (!prescription || !prescription.extraction) return null;
 
-    const patientFriendly = await claudeService.generatePatientFriendly(
+    const patientFriendly = await geminiService.generatePatientFriendly(
       prescription.extraction,
       language
     );
