@@ -10,6 +10,9 @@ import {
   Loader2,
   Sparkles,
   UploadCloud,
+  AlertTriangle,
+  FileX2,
+  X,
 } from "lucide-react";
 import { uploadPrescription } from "@/lib/api/client";
 import type { PrescriptionResult, PrescriptionLanguage } from "@/lib/types";
@@ -40,6 +43,7 @@ export function UploadScreen() {
   const [isDragging, setIsDragging] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [showUnreadableAlert, setShowUnreadableAlert] = React.useState(false);
   const [result, setResult] = React.useState<PrescriptionResult | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<PrescriptionLanguage>("en");
   const [rawView, setRawView] = React.useState(false);
@@ -87,11 +91,23 @@ export function UploadScreen() {
 
     try {
       const parsed = await uploadPrescription(file, selectedLanguage);
+
+      const isEmpty = parsed.medicines.length === 0 && !parsed.doctorName && !parsed.patientName && !parsed.diagnosis;
+      if (isEmpty) {
+        throw new Error("Backend is unable to get text from the image. The image is not clear, please upload a new image.");
+      }
+
       setResult(parsed);
       setRawView(false);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Analysis failed. Please try again.";
-      setError(message);
+      let message = err instanceof Error ? err.message : "Analysis failed. Please try again.";
+
+      // Check if it's our specific unreadable error from the backend
+      if (message.toLowerCase().includes("not clear") || message.toLowerCase().includes("unable to get text")) {
+        setShowUnreadableAlert(true);
+      } else {
+        setError(message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -308,6 +324,36 @@ export function UploadScreen() {
               </div>
             </CardHeader>
             <CardContent>
+              {result.isUnreadable && (
+                <div className="mb-6 flex flex-col items-center gap-4 rounded-xl border-2 border-red-500/20 bg-red-500/5 p-8 text-center animate-in fade-in slide-in-from-top-4 duration-500">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+                    <FileX2 className="h-7 w-7" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-bold text-red-700">Completely Unreadable</h3>
+                    <p className="max-w-md text-sm text-red-600/80 leading-relaxed">
+                      This prescription appears to be too messy or blurred for our AI to extract reliable medical data.
+                      Please upload a clearer image or enter the details manually below.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {result.isLowConfidence && !result.isUnreadable && (
+                <div className="mb-6 flex items-start gap-4 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 animate-in fade-in slide-in-from-top-2 duration-500">
+                  <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600">
+                    <AlertTriangle className="h-5 w-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-sm font-bold text-amber-700">Messy Handwriting Detected</p>
+                    <p className="text-xs text-amber-600/90 leading-relaxed">
+                      The extraction confidence is lower than usual. We've highlighted uncertain fields in the editor.
+                      Please double-check all medication names and dosages before saving.
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {rawView ? (
                 <pre className="max-h-[700px] overflow-auto rounded-lg border border-border bg-muted/15 p-4 text-xs">
                   {JSON.stringify(result, null, 2)}
@@ -318,6 +364,60 @@ export function UploadScreen() {
             </CardContent>
           </Card>
         </FadeIn>
+      )}
+
+      {/* Custom Unreadable Alert Modal */}
+      {showUnreadableAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
+          <div
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm transition-opacity"
+            onClick={() => setShowUnreadableAlert(false)}
+          />
+          <FadeIn className="relative w-full max-w-lg">
+            <div className="overflow-hidden rounded-2xl border bg-background shadow-2xl ring-1 ring-black/5">
+              <div className="flex flex-col items-center gap-4 bg-red-500/5 p-8 text-center sm:p-10">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10 text-red-500 shadow-inner">
+                  <FileX2 className="h-10 w-10" />
+                </div>
+                <div className="space-y-3">
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground">Unreadable Image</h2>
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                    The AI was unable to extract any text from the provided image. This usually happens if the handwriting is completely illegible, the image is too blurry, or it's not a medical prescription.
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-muted/30 p-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Button
+                  className="w-full sm:w-auto"
+                  onClick={() => {
+                    setShowUnreadableAlert(false);
+                    onReset();
+                    fileInputRef.current?.click();
+                  }}
+                >
+                  <UploadCloud className="mr-2 h-4 w-4" />
+                  Upload Clearer Image
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto"
+                  onClick={() => setShowUnreadableAlert(false)}
+                >
+                  Dismiss
+                </Button>
+              </div>
+
+              <button
+                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                onClick={() => setShowUnreadableAlert(false)}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </button>
+            </div>
+          </FadeIn>
+        </div>
       )}
     </div>
   );

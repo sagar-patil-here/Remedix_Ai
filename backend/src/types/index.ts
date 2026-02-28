@@ -30,6 +30,8 @@ export interface IPrescriptionExtraction {
   additionalNotes?: string;
   overallConfidence: number; // 0-1 overall extraction confidence
   uncertainFields: string[]; // fields with low confidence
+  isLowConfidence?: boolean; // Flag for messy handwriting
+  isUnreadable?: boolean; // Flag for completely illegible handwriting
 }
 
 export interface IPatientFriendlyMedication {
@@ -91,8 +93,8 @@ export interface IUploadedFile {
   filename: string;
 }
 
-export type SupportedLanguage = 
-  | 'en' | 'hi' | 'bn' | 'te' | 'mr' | 'ta' 
+export type SupportedLanguage =
+  | 'en' | 'hi' | 'bn' | 'te' | 'mr' | 'ta'
   | 'gu' | 'ur' | 'kn' | 'ml' | 'pa' | 'or';
 
 export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, string> = {

@@ -35,6 +35,8 @@ export interface BackendExtraction {
   additionalNotes?: string;
   overallConfidence: number;
   uncertainFields: string[];
+  isLowConfidence?: boolean;
+  isUnreadable?: boolean;
 }
 
 // ─── Backend patient-friendly medication ───
@@ -173,6 +175,8 @@ export interface PrescriptionResult {
   diagnosis?: string;
   overallConfidence?: number;
   uncertainFields?: string[];
+  isLowConfidence?: boolean;
+  isUnreadable?: boolean;
 
   // Feature flags
   audioUrl?: string;

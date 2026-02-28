@@ -70,6 +70,8 @@ export function transformBackendPrescription(bp: BackendPrescription): Prescript
     diagnosis: extraction?.diagnosis,
     overallConfidence: extraction?.overallConfidence,
     uncertainFields: extraction?.uncertainFields,
+    isLowConfidence: extraction?.isLowConfidence,
+    isUnreadable: extraction?.isUnreadable,
 
     audioUrl: undefined,
     pdfUrl: undefined,

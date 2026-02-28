@@ -231,6 +231,8 @@ Return JSON: {"value": "your best reading", "confidence": 0.0, "reasoning": "why
                 additionalNotes: parsed.additionalNotes || undefined,
                 overallConfidence: Math.min(1, Math.max(0, Number(parsed.overallConfidence) || 0.5)),
                 uncertainFields: Array.isArray(parsed.uncertainFields) ? parsed.uncertainFields : [],
+                isLowConfidence: parsed.overallConfidence < 0.5,
+                isUnreadable: parsed.overallConfidence < 0.25,
             };
         } catch (error) {
             console.error('Failed to parse extraction response:', error);

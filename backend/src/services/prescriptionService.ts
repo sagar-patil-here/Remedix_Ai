@@ -33,6 +33,10 @@ export class PrescriptionService {
       console.log(`Extracting prescription ${prescription._id}`);
       const extraction = await geminiService.extractPrescription(filePath);
 
+      if (extraction.isUnreadable) {
+        throw new Error("Unable to get text from the image. The image is not clear, please upload a new image.");
+      }
+
       // Step 2: Generate patient-friendly version
       console.log(`Generating patient-friendly output for ${prescription._id}`);
       const patientFriendly = await geminiService.generatePatientFriendly(extraction, language);
@@ -58,7 +62,7 @@ export class PrescriptionService {
     return prescription;
   }
 
-// Get paginated prescriptions for a user
+  // Get paginated prescriptions for a user
   async getUserPrescriptions(
     userId: string,
     page = 1,
@@ -88,7 +92,7 @@ export class PrescriptionService {
       userId,
     }).populate('verifiedBy', 'name email role');
   }
-// Verify prescription (for doctors)
+  // Verify prescription (for doctors)
   async verifyPrescription(
     prescriptionId: string,
     verifierId: string,
@@ -111,7 +115,7 @@ export class PrescriptionService {
     return prescription;
   }
 
- // Reject a prescription with reason (doctor)
+  // Reject a prescription with reason (doctor)
   async rejectPrescription(
     prescriptionId: string,
     verifierId: string,
@@ -128,7 +132,7 @@ export class PrescriptionService {
     return prescription;
   }
 
-// Translate prescription to another language
+  // Translate prescription to another language
   async translatePrescription(
     prescriptionId: string,
     userId: string,
@@ -156,9 +160,9 @@ export class PrescriptionService {
     return result.deletedCount > 0;
   }
 
-  
-   //Get prescription statistics for admin/analytics
-  
+
+  //Get prescription statistics for admin/analytics
+
   async getStats(): Promise<Record<string, number>> {
     const stats = await Prescription.aggregate([
       {
@@ -176,6 +180,6 @@ export class PrescriptionService {
     }, {} as Record<string, number>);
   }
 }
-  
+
 
 export default new PrescriptionService();
