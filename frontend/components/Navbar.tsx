@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, ArrowRight } from "lucide-react";
+import { Activity, ArrowRight, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
@@ -31,12 +31,12 @@ export function Navbar({ className }: NavbarProps) {
           <ThemeToggle />
           <SignedIn>
             <Button asChild variant="secondary" className="hidden sm:inline-flex">
-              <Link href="/upload">Upload Prescription</Link>
+              <Link href="/upload">Analyze Prescription</Link>
             </Button>
             <Button asChild>
-              <Link href="/upload" className="gap-2 inline-flex items-center">
-                Analyze
-                <ArrowRight className="h-4 w-4" />
+              <Link href="/dashboard" className="gap-2 inline-flex items-center">
+                Dashboard
+                <LayoutDashboard className="h-4 w-4" />
               </Link>
             </Button>
             <UserButton afterSignOutUrl="/" />
@@ -44,7 +44,7 @@ export function Navbar({ className }: NavbarProps) {
           <SignedOut>
             <Button asChild>
               <Link href="/upload" className="gap-2 inline-flex items-center">
-                Analyze
+                Get Started
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

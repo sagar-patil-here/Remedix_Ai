@@ -21,6 +21,8 @@ const config: Config = {
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular"],
       },
       borderRadius: {
+        "2xl": "var(--radius-2xl)",
+        xl: "var(--radius-xl)",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 6px)",
@@ -53,6 +55,7 @@ const config: Config = {
         },
       },
       boxShadow: {
+        premium: "0 1px 2px rgba(0,0,0,0.02), 0 8px 32px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.02)",
         soft: "0 1px 2px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06)",
         "cal-sm": "0 1px 2px rgba(0,0,0,0.05)",
         "cal-md": "0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05)",

@@ -5,52 +5,54 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
+    --foreground: 240 10% 3.9%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 9%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 173 80% 40%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
+    --card-foreground: 240 10% 3.9%;
 
-    --primary: 0 0% 9%;
+    --primary: 173 80% 40%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 9%;
+    --accent: 173 80% 96%;
+    --accent-foreground: 173 80% 30%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
   }
 
   .dark {
-    --background: 0 0% 6%;
+    --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 63%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 83%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 173 80% 40%;
 
-    --card: 0 0% 9%;
+    --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
 
-    --primary: 0 0% 98%;
+    --primary: 173 80% 40%;
     --primary-foreground: 0 0% 9%;
 
-    --secondary: 0 0% 12%;
+    --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
 
-    --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 173 80% 10%;
+    --accent-foreground: 173 80% 90%;
   }
 
   * {
@@ -63,6 +65,7 @@
 }
 
 @layer components {
+
   /* Theme Toggle Button */
   .theme-toggle-btn {
     @apply relative flex items-center w-14 h-7 p-1 rounded-full outline-none transition-colors duration-300;
@@ -125,6 +128,7 @@
 }
 
 @media print {
+
   header,
   footer {
     display: none !important;
