@@ -7,6 +7,12 @@ import geminiService from './geminiService';
 import { tesseractService } from './tesseractService';
 import { SupportedLanguage } from '../types';
 
+export class PrescriptionProcessingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PrescriptionProcessingError';
+  }
+}
 
 export class PrescriptionService {
 
@@ -19,62 +25,69 @@ export class PrescriptionService {
     pipeline: "gemini" | "ml_pipeline" = "gemini"
   ): Promise<IPrescriptionDocument> {
     const startTime = Date.now();
-
-    // Create prescription record
-    const prescription = await Prescription.create({
-      userId,
-      originalImageUrl: filePath, // This is the Cloudinary URL
-      imageHash: `cloud_${Date.now()}`, // Temporary hash for Cloudinary
-      status: 'processing',
-      pipeline,
-      requestedLanguage: language,
-      privacyConsent,
-    });
-
     try {
       let extraction;
       if (pipeline === 'ml_pipeline') {
-        console.log(`[ML Pipeline] Extracting text via Tesseract OCR for ${prescription._id}`);
+        console.log(`[ML Pipeline] Extracting text via Tesseract OCR for ${originalName}`);
         const rawText = await tesseractService.extractTextFromImage(filePath);
-        console.log(`[ML Pipeline] Structuring text via Gemini for ${prescription._id}`);
+        console.log(`[ML Pipeline] Structuring text via Gemini for ${originalName}`);
         extraction = await geminiService.structurePrescriptionText(rawText);
       } else {
-        console.log(`[Gemini Pipeline] Extracting directly via Gemini for ${prescription._id}`);
+        console.log(`[Gemini Pipeline] Extracting directly via Gemini for ${originalName}`);
         extraction = await geminiService.extractPrescription(filePath);
       }
 
       if (extraction.isUnreadable) {
-        throw new Error("Unable to get text from the image. The image is not clear, please upload a new image.");
+        throw new PrescriptionProcessingError(
+          "Unable to get text from the image. The image is not clear, please upload a new image."
+        );
       }
 
       // Reject non-prescription images: if no medications were found, it's not a valid prescription
       if (!extraction.medications || extraction.medications.length === 0) {
-        throw new Error("No medicine data found in this image. Please upload a valid medical prescription containing medication details.");
+        throw new PrescriptionProcessingError(
+          "No medicine data found in this image. Please upload a valid medical prescription containing medication details."
+        );
+      }
+
+      if (extraction.isLowConfidence || extraction.overallConfidence < 0.5) {
+        throw new PrescriptionProcessingError(
+          "Extraction confidence is too low. Please upload a clearer prescription image."
+        );
       }
 
       // Step 2: Generate patient-friendly version
-      console.log(`Generating patient-friendly output for ${prescription._id}`);
+      console.log(`Generating patient-friendly output for ${originalName}`);
       const patientFriendly = await geminiService.generatePatientFriendly(extraction, language);
 
       const processingDurationMs = Date.now() - startTime;
 
-      // Update prescription with results
-      prescription.extraction = extraction;
-      prescription.patientFriendly = patientFriendly;
-      prescription.status = 'extracted';
-      prescription.processingDurationMs = processingDurationMs;
-      await prescription.save();
+      // Save only successful and quality-checked outputs
+      const prescription = await Prescription.create({
+        userId,
+        originalImageUrl: filePath,
+        imageHash: `cloud_${Date.now()}`,
+        status: 'extracted',
+        pipeline,
+        requestedLanguage: language,
+        privacyConsent,
+        extraction,
+        patientFriendly,
+        processingDurationMs,
+      });
 
       console.log(`Prescription ${prescription._id} processed in ${processingDurationMs}ms`);
+      return prescription;
 
     } catch (error) {
-      prescription.status = 'error';
-      prescription.processingError = (error as Error).message;
-      await prescription.save();
-      console.error(`Prescription ${prescription._id} processing failed:`, error);
+      console.error(`Prescription processing failed for ${originalName}:`, error);
+      if (error instanceof PrescriptionProcessingError) {
+        throw error;
+      }
+      throw new PrescriptionProcessingError(
+        `AI processing failed. Please try again. ${(error as Error).message}`
+      );
     }
-
-    return prescription;
   }
 
   // Get paginated prescriptions for a user

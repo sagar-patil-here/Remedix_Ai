@@ -6,7 +6,7 @@ import {
   SUPPORTED_LANGUAGES,
   IUser,
 } from "../types";
-import prescriptionService from "../services/prescriptionService";
+import prescriptionService, { PrescriptionProcessingError } from "../services/prescriptionService";
 
 declare global {
   namespace Express {
@@ -82,18 +82,20 @@ export const uploadPrescription = async (req: Request, res: Response) => {
       pipeline,
     );
 
-    const statusCode = prescription.status === "error" ? 422 : 201;
-
-    res.status(statusCode).json({
-      success: prescription.status !== "error",
-      message:
-        prescription.status === "error"
-          ? `Processing failed: ${prescription.processingError}`
-          : "Prescription processed successfully",
+    res.status(201).json({
+      success: true,
+      message: "Prescription processed successfully",
       data: { prescription },
     } as IResponse);
   } catch (error) {
     console.error("Error in uploadPrescription:", error);
+    if (error instanceof PrescriptionProcessingError) {
+      res.status(422).json({
+        success: false,
+        message: error.message,
+      } as IResponse);
+      return;
+    }
     res.status(500).json({
       success: false,
       message:
