@@ -47,6 +47,11 @@ export class PrescriptionService {
         throw new Error("Unable to get text from the image. The image is not clear, please upload a new image.");
       }
 
+      // Reject non-prescription images: if no medications were found, it's not a valid prescription
+      if (!extraction.medications || extraction.medications.length === 0) {
+        throw new Error("No medicine data found in this image. Please upload a valid medical prescription containing medication details.");
+      }
+
       // Step 2: Generate patient-friendly version
       console.log(`Generating patient-friendly output for ${prescription._id}`);
       const patientFriendly = await geminiService.generatePatientFriendly(extraction, language);

@@ -19,6 +19,8 @@ IMPORTANT RULES:
 3. If a field is illegible or unclear, mark it with low confidence and flag it as "uncertain".
 4. Never guess medication names — if uncertain, provide your best reading with low confidence.
 5. Return ONLY valid JSON, no markdown, no explanation outside JSON.
+6. CRITICAL: If the image is NOT a medical prescription (e.g. a random photo, text document, receipt, ID card, screenshot, etc.), return an empty medications array, set overallConfidence to 0, and set isUnreadable to true. Only extract medications if the image genuinely contains a doctor's prescription with medicine names, dosages, and instructions.
+7. Only include entries in the medications array if they are actual medicines/drugs. Do NOT include diagnosis, patient info, or general notes as medication entries.
 
 Confidence scoring guide:
 - 0.9-1.0: Clearly legible, high certainty
