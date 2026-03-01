@@ -18,15 +18,19 @@ declare global {
 
 export const uploadPrescription = async (req: Request, res: Response) => {
   try {
-    // Mock user for testing if not present
-    if (!req.user) {
-      console.warn("No user found in request, using mock user for testing.");
-      req.user = {
-        _id: "67c1b5a5b5a5b5a5b5a5b5a5", // Mock MongoDB ID
-        name: "Test User",
-        email: "test@example.com",
-        role: "patient",
-      } as any;
+    let userId = req.headers["x-user-id"] as string;
+
+    if (!userId && req.user) {
+      // Fallback if there is an actual req.user set by some other middleware
+      userId = req.user._id;
+    }
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized: Missing user authentication headers.",
+      } as IResponse);
+      return;
     }
 
     if (!req.file) {
@@ -70,7 +74,7 @@ export const uploadPrescription = async (req: Request, res: Response) => {
     }
 
     const prescription = await prescriptionService.processPrescription(
-      req.user!._id,
+      userId,
       req.file.path, // This is the Cloudinary URL
       req.file.originalname, // Original filename
       language,
@@ -100,8 +104,43 @@ export const uploadPrescription = async (req: Request, res: Response) => {
   }
 };
 
+export const getPrescriptionById = async (req: Request, res: Response) => {
+  try {
+    let userId = req.headers["x-user-id"] as string;
+    if (!userId && req.user) userId = req.user._id;
+
+    const prescriptionId = req.params.id as string;
+    const prescription = await prescriptionService.getPrescriptionById(prescriptionId, userId);
+
+    if (!prescription) {
+      res.status(404).json({ success: false, message: "Prescription not found" } as IResponse);
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Prescription retrieved",
+      data: { prescription },
+    } as IResponse);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch prescription",
+    } as IResponse);
+  }
+};
+
 export const getUserPrescriptions = async (req: Request, res: Response) => {
   try {
+    // The user recently changed the URL to /userPrescriptions/:id on the frontend
+    let userId = (req.params.id as string) || (req.headers["x-user-id"] as string);
+    if (!userId && req.user) userId = req.user._id;
+
+    if (!userId || userId === 'undefined' || userId === 'null') {
+      res.status(401).json({ success: false, message: "Unauthorized: Invalid or missing userId" } as IResponse);
+      return;
+    }
+
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
     const limit = Math.min(
       50,
@@ -110,7 +149,7 @@ export const getUserPrescriptions = async (req: Request, res: Response) => {
 
     const { prescriptions, total } =
       await prescriptionService.getUserPrescriptions(
-        req.user!._id,
+        userId,
         page,
         limit,
       );
@@ -133,9 +172,17 @@ export const getUserPrescriptions = async (req: Request, res: Response) => {
 
 export const verifyPrescription = async (req: Request, res: Response) => {
   try {
+    let userId = req.headers["x-user-id"] as string;
+    if (!userId && req.user) userId = req.user._id;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Unauthorized" } as IResponse);
+      return;
+    }
+
     const prescription = await prescriptionService.verifyPrescription(
       req.params._id as string,
-      req.user!._id,
+      userId,
       req.body.notes,
     );
 
@@ -149,7 +196,7 @@ export const verifyPrescription = async (req: Request, res: Response) => {
       return;
     }
 
-    console.info(`Prescription ${req.params._id} verified by ${req.user!._id}`);
+    console.info(`Prescription ${req.params._id} verified by ${userId}`);
 
     res.status(200).json({
       success: true,
@@ -166,9 +213,17 @@ export const verifyPrescription = async (req: Request, res: Response) => {
 
 export const rejectPrescription = async (req: Request, res: Response) => {
   try {
+    let userId = req.headers["x-user-id"] as string;
+    if (!userId && req.user) userId = req.user._id;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Unauthorized" } as IResponse);
+      return;
+    }
+
     const prescription = await prescriptionService.rejectPrescription(
       req.params._id as string,
-      req.user!._id,
+      userId,
       req.body.reason,
     );
 
@@ -182,7 +237,7 @@ export const rejectPrescription = async (req: Request, res: Response) => {
       return;
     }
 
-    console.info(`Prescription ${req.params._id} rejected by ${req.user!._id}`);
+    console.info(`Prescription ${req.params._id} rejected by ${userId}`);
 
     res.status(200).json({
       success: true,
@@ -199,6 +254,14 @@ export const rejectPrescription = async (req: Request, res: Response) => {
 
 export const translatePrescription = async (req: Request, res: Response) => {
   try {
+    let userId = req.headers["x-user-id"] as string;
+    if (!userId && req.user) userId = req.user._id;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: "Unauthorized" } as IResponse);
+      return;
+    }
+
     const language = req.body.language as SupportedLanguage;
 
     if (!SUPPORTED_LANGUAGES[language]) {
@@ -210,7 +273,7 @@ export const translatePrescription = async (req: Request, res: Response) => {
     }
     const prescription = await prescriptionService.translatePrescription(
       req.params._id as string,
-      req.user!._id,
+      userId,
       language,
     );
     if (!prescription) {

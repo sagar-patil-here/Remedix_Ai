@@ -1,6 +1,3 @@
-// ─── Backend-aligned types ───
-// These mirror the backend's IPrescription, IMedication, etc.
-
 export type UploadKind = "image" | "pdf";
 
 export type PrescriptionLanguage =
@@ -11,7 +8,6 @@ export type PriceVendor = "amazon" | "tata1mg" | "pharmeasy";
 
 export type PrescriptionStatus = "processing" | "extracted" | "verified" | "rejected" | "error";
 
-// ─── Backend medication (from Gemini extraction) ───
 export interface BackendMedication {
   name: string;
   genericName?: string;
@@ -50,7 +46,7 @@ export interface BackendPatientFriendlyMedication {
   commonSideEffects: string[];
 }
 
-// ─── Backend patient-friendly prescription ───
+
 export interface BackendPatientFriendly {
   summary: string;
   medications: BackendPatientFriendlyMedication[];
@@ -59,7 +55,7 @@ export interface BackendPatientFriendly {
   translatedLanguage: string;
 }
 
-// ─── Full backend prescription document ───
+
 export interface BackendPrescription {
   _id: string;
   userId: string;
@@ -80,7 +76,6 @@ export interface BackendPrescription {
   updatedAt: string;
 }
 
-// ─── Backend API response wrapper ───
 export interface BackendResponse<T = unknown> {
   success: boolean;
   message: string;
@@ -94,7 +89,7 @@ export interface BackendResponse<T = unknown> {
   };
 }
 
-// ─── Frontend display types (transformed from backend) ───
+
 
 export interface GenericAlternative {
   name: string;

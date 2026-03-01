@@ -95,12 +95,14 @@ export class PrescriptionService {
 
   async getPrescriptionById(
     prescriptionId: string,
-    userId: string
+    userId?: string
   ): Promise<IPrescriptionDocument | null> {
-    return Prescription.findOne({
-      _id: prescriptionId,
-      userId,
-    }).populate('verifiedBy', 'name email role');
+    const query: Record<string, string> = { _id: prescriptionId };
+    if (userId) {
+      query.userId = userId;
+    }
+
+    return Prescription.findOne(query).populate('verifiedBy', 'name email role');
   }
   // Verify prescription (for doctors)
   async verifyPrescription(

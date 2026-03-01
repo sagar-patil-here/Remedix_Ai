@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuth } from "@clerk/nextjs";
+
 import * as React from "react";
 import Image from "next/image";
 import {
@@ -36,6 +38,7 @@ function validateFile(file: File | null): string | null {
 }
 
 export function UploadScreen() {
+  const { userId } = useAuth();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const [file, setFile] = React.useState<File | null>(null);
@@ -93,7 +96,7 @@ export function UploadScreen() {
     setIsSubmitting(true);
 
     try {
-      const parsed = await uploadPrescription(file, selectedLanguage, pipeline);
+      const parsed = await uploadPrescription(file, selectedLanguage, pipeline, userId);
 
       const isEmpty = parsed.medicines.length === 0 && !parsed.doctorName && !parsed.patientName && !parsed.diagnosis;
       if (isEmpty) {

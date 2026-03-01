@@ -5,10 +5,7 @@ import os from 'os';
 import path from 'path';
 
 class TesseractService {
-    /**
-     * Extracts raw text from an image using Tesseract OCR.
-     * Can handle both local file paths and remote URLs.
-     */
+    // Extracts raw text from an image using Tesseract OCR.
     async extractTextFromImage(imageUrlOrPath: string): Promise<string> {
         try {
             console.log(`[Tesseract Service] Processing image: ${imageUrlOrPath}`);
@@ -16,8 +13,7 @@ class TesseractService {
             let targetPath = imageUrlOrPath;
             let tempFilePath: string | null = null;
 
-            // If the path is a URL (like Cloudinary), Tesseract.js can theoretically handle it directly, 
-            // but it's often more reliable to download it to a temp file first.
+
             if (imageUrlOrPath.startsWith('http://') || imageUrlOrPath.startsWith('https://')) {
                 tempFilePath = path.join(os.tmpdir(), `tesseract_img_${Date.now()}.png`);
                 const response = await axios.get(imageUrlOrPath, { responseType: 'arraybuffer' });
@@ -25,10 +21,9 @@ class TesseractService {
                 targetPath = tempFilePath;
             }
 
-            // Run Tesseract OCR on the image
             const { data: { text } } = await Tesseract.recognize(
                 targetPath,
-                'eng', // Default language to English. Can be enhanced to support ['eng', 'hin', 'mar'].join('+') if needed.
+                'eng',
                 { logger: m => console.log(`[Tesseract] ${m.status}: ${Math.round(m.progress * 100)}%`) }
             );
 

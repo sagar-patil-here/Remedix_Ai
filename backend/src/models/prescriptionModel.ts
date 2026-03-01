@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 import { IPrescriptionExtraction, IPatientFriendlyPrescription } from '../types/index';
 
 export interface IPrescriptionDocument extends Document {
-  userId: mongoose.Types.ObjectId;
+  userId: string;
   originalImageUrl: string;
   imageHash: string;
   status: 'processing' | 'extracted' | 'verified' | 'rejected' | 'error';
@@ -78,8 +78,7 @@ const PatientFriendlySchema = new Schema(
 const PrescriptionSchema = new Schema<IPrescriptionDocument>(
   {
     userId: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true,
       index: true,
     },
