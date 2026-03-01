@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Pill, Github, Twitter, Linkedin, Mail } from "lucide-react";
+import { Pill, Github, Twitter, Mail } from "lucide-react";
 
 export interface FooterProps {
   className?: string;

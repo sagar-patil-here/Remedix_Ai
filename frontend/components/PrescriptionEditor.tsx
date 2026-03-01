@@ -3,10 +3,10 @@
 import * as React from "react";
 import { Download, ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+// Removed unused Card imports
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
+// Removed unused Badge import
 import { Separator } from "@/components/ui/separator";
 import type { PrescriptionResult, Medicine } from "@/lib/types";
 import jsPDF from "jspdf";
@@ -29,7 +29,7 @@ export function PrescriptionEditor({ result, onBack, onSave, isVerified = true }
         setData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const handleMedicineChange = (id: string, field: keyof Medicine, value: any) => {
+    const handleMedicineChange = (id: string, field: keyof Medicine, value: unknown) => {
         setData((prev) => ({
             ...prev,
             medicines: (prev.medicines || []).map((med) =>
@@ -99,6 +99,7 @@ export function PrescriptionEditor({ result, onBack, onSave, isVerified = true }
         });
 
         // Note
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const finalY = (doc as any).lastAutoTable.finalY + 10;
         doc.setFontSize(10);
         doc.setFont("helvetica", "italic");

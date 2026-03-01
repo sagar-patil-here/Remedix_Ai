@@ -107,7 +107,7 @@ export function UploadScreen() {
       setRawView(false);
       setIsVerified(false);
     } catch (err) {
-      let message = err instanceof Error ? err.message : "Analysis failed. Please try again.";
+      const message = err instanceof Error ? err.message : "Analysis failed. Please try again.";
 
       // Check if it's our specific unreadable error from the backend
       if (message.toLowerCase().includes("not clear") || message.toLowerCase().includes("unable to get text")) {
@@ -131,16 +131,7 @@ export function UploadScreen() {
     setPreviewKind(null);
   };
 
-  const onDownloadJson = () => {
-    if (!result) return;
-    const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `prescription-${result.id}.json`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-  };
+  // Removed unused onDownloadJson
 
   return (
     <div className="space-y-8">
@@ -389,7 +380,7 @@ export function UploadScreen() {
                     htmlFor="verify-prescription"
                     className="text-xs font-medium text-emerald-700 cursor-pointer select-none hover:text-emerald-800"
                   >
-                    I have verified the analyzed prescription with the doctor's original document.
+                    I have verified the analyzed prescription with the doctor&apos;s original document.
                   </label>
                 </div>
               </div>
@@ -429,7 +420,7 @@ export function UploadScreen() {
                   <div className="space-y-1">
                     <p className="text-sm font-bold text-amber-700">Messy Handwriting Detected</p>
                     <p className="text-xs text-amber-600/90 leading-relaxed">
-                      The extraction confidence is lower than usual. We've highlighted uncertain fields in the editor.
+                      The extraction confidence is lower than usual. We&apos;ve highlighted uncertain fields in the editor.
                       Please double-check all medication names and dosages before saving.
                     </p>
                   </div>
@@ -464,7 +455,7 @@ export function UploadScreen() {
                 <div className="space-y-3">
                   <h2 className="text-2xl font-bold tracking-tight text-foreground">Unreadable Image</h2>
                   <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mx-auto">
-                    The AI was unable to extract any text from the provided image. This usually happens if the handwriting is completely illegible, the image is too blurry, or it's not a medical prescription.
+                    The AI was unable to extract any text from the provided image. This usually happens if the handwriting is completely illegible, the image is too blurry, or it&apos;s not a medical prescription.
                   </p>
                 </div>
               </div>

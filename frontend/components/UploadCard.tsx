@@ -71,7 +71,7 @@ export function UploadCard({ className, onAnalyzed }: UploadCardProps) {
       const result = await uploadPrescription(fileToSend);
       onAnalyzed?.(result);
       if (!onAnalyzed) router.push(`/result/${result.id}`);
-    } catch (err) {
+    } catch {
       setError("Analysis failed. Please try again.");
     } finally {
       setIsSubmitting(false);

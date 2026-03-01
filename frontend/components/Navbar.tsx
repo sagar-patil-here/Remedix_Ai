@@ -28,9 +28,7 @@ export function Navbar({ className }: NavbarProps) {
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
 
-  const navLinks = [
-    { name: "Home", href: "/", icon: Home },
-  ];
+  // Removed unused navLinks
 
   React.useEffect(() => {
     if (isOpen) {
