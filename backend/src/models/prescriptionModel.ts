@@ -16,7 +16,7 @@ export interface IPrescriptionDocument extends Document {
   requestedLanguage: string;
   privacyConsent: boolean;
   processingDurationMs?: number;
-  pipeline?: 'gemini' | 'ml_pipeline';
+  pipeline?: 'gemini' | 'groq';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -98,7 +98,7 @@ const PrescriptionSchema = new Schema<IPrescriptionDocument>(
     },
     pipeline: {
       type: String,
-      enum: ['gemini', 'ml_pipeline'],
+      enum: ['gemini', 'groq'],
       default: 'gemini',
     },
     extraction: ExtractionSchema,

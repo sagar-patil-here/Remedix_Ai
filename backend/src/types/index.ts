@@ -22,6 +22,7 @@ export interface IMedication {
 export interface IPrescriptionExtraction {
   patientName?: string;
   patientAge?: string;
+  patientGender?:string;
   doctorName?: string;
   doctorRegistration?: string;
   date?: string;
@@ -57,7 +58,7 @@ export interface IPrescription {
   userId: string;
   originalImageUrl: string;
   imageHash: string; // for deduplication
-  pipeline?: "gemini" | "ml_pipeline";
+  pipeline?: "gemini" | "groq";
   status: 'processing' | 'extracted' | 'verified' | 'rejected' | 'error';
   extraction?: IPrescriptionExtraction;
   patientFriendly?: IPatientFriendlyPrescription;

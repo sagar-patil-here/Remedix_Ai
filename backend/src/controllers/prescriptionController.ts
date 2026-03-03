@@ -53,7 +53,7 @@ export const uploadPrescription = async (req: Request, res: Response) => {
       return;
     }
     const language = (req.body.language || "en") as SupportedLanguage;
-    const pipeline = (req.body.pipeline || "gemini") as "gemini" | "ml_pipeline";
+    const pipeline = (req.body.pipeline || "gemini") as "gemini" | "groq";
     const privacyConsent =
       req.body.privacyConsent === "true" || req.body.privacyConsent === true;
 

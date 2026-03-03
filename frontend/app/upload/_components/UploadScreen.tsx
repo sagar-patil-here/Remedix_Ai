@@ -50,7 +50,7 @@ export function UploadScreen() {
   const [showUnreadableAlert, setShowUnreadableAlert] = React.useState(false);
   const [result, setResult] = React.useState<PrescriptionResult | null>(null);
   const [selectedLanguage, setSelectedLanguage] = React.useState<PrescriptionLanguage>("en");
-  const [pipeline, setPipeline] = React.useState<"gemini" | "ml_pipeline">("gemini");
+  const [pipeline, setPipeline] = React.useState<"gemini" | "groq">("gemini");
   const [rawView, setRawView] = React.useState(false);
   const [isVerified, setIsVerified] = React.useState(false);
 
@@ -270,24 +270,24 @@ export function UploadScreen() {
                       onClick={() => setPipeline("gemini")}
                     >
                       <div className="flex flex-col items-start text-left">
-                        <span className="font-semibold text-sm">Direct Gemini</span>
-                        <span className="text-[10px] opacity-80 font-normal">Fast, single-step processing</span>
+                        <span className="font-semibold text-sm">Fast Scan</span>
+                        <span className="text-[10px] opacity-80 font-normal">Limited, but fast</span>
                       </div>
                     </Button>
                     <Button
                       type="button"
-                      variant={pipeline === "ml_pipeline" ? "default" : "outline"}
+                      variant={pipeline === "groq" ? "default" : "outline"}
                       className={cn(
                         "flex-1 justify-start h-12 transition-all duration-200 outline-purple-500",
-                        pipeline === "ml_pipeline"
+                        pipeline === "groq"
                           ? "bg-purple-600 hover:bg-purple-700 text-white shadow-md ring-2 ring-purple-600/30 border-purple-600"
                           : "hover:bg-muted"
                       )}
-                      onClick={() => setPipeline("ml_pipeline")}
+                      onClick={() => setPipeline("groq")}
                     >
                       <div className="flex flex-col items-start text-left">
-                        <span className="font-semibold text-sm">ML Pipeline (Beta)</span>
-                        <span className="text-[10px] opacity-80 font-normal">Qwen OCR + Gemini structure</span>
+                        <span className="font-semibold text-sm">Slow Scan</span>
+                        <span className="text-[10px] opacity-80 font-normal">Extra token</span>
                       </div>
                     </Button>
                   </div>

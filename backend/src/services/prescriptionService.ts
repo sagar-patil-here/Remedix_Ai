@@ -6,6 +6,7 @@ import Prescription, { IPrescriptionDocument } from '../models/prescriptionModel
 import geminiService from './geminiService';
 import { tesseractService } from './tesseractService';
 import { SupportedLanguage } from '../types';
+import groqService from './groqService';
 
 export class PrescriptionProcessingError extends Error {
   constructor(message: string) {
@@ -22,16 +23,17 @@ export class PrescriptionService {
     originalName: string,
     language: SupportedLanguage,
     privacyConsent: boolean,
-    pipeline: "gemini" | "ml_pipeline" = "gemini"
+    pipeline: "gemini" | "groq" = "gemini"
   ): Promise<IPrescriptionDocument> {
     const startTime = Date.now();
     try {
       let extraction;
-      if (pipeline === 'ml_pipeline') {
+      if (pipeline === 'groq') {
         console.log(`[ML Pipeline] Extracting text via Tesseract OCR for ${originalName}`);
         const rawText = await tesseractService.extractTextFromImage(filePath);
-        console.log(`[ML Pipeline] Structuring text via Gemini for ${originalName}`);
-        extraction = await geminiService.structurePrescriptionText(rawText);
+        console.log(`[ML Pipeline] Structuring text via Groq for ${originalName}`);
+        // extraction = await geminiService.structurePrescriptionText(rawText);
+        extraction=await groqService.structurePrescriptionText(rawText)
       } else {
         console.log(`[Gemini Pipeline] Extracting directly via Gemini for ${originalName}`);
         extraction = await geminiService.extractPrescription(filePath);
